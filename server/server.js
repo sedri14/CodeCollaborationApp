@@ -18,7 +18,7 @@ const io = new Server(server, {
 const roomUserCounter = {};
 
 io.on("connection", (socket) => {
-    console.log(`User connected: ${socket.id}`)
+    //console.log(`User connected: ${socket.id}`)
 
     socket.on("join_room", (roomId) => {
         socket.join(roomId)
@@ -27,6 +27,9 @@ io.on("connection", (socket) => {
         } else {
             roomUserCounter[roomId]++;
         }
+
+        // update client with user count
+        io.to(roomId).emit("user_count", roomUserCounter[roomId]);
 
         console.log(`User ${socket.id} connected to room ${roomId}`)
         console.log(`Room: ${roomId}, No of users: ${roomUserCounter[roomId]}`)
@@ -38,6 +41,9 @@ io.on("connection", (socket) => {
         if (roomUserCounter[roomId]) {
             roomUserCounter[roomId]--;
         }
+
+        // update client with user count
+        io.to(roomId).emit("user_count", roomUserCounter[roomId]);
 
         console.log(`User ${socket.id} DISCONNECT from room ${roomId}`)
         console.log(`Room: ${roomId}, No of users: ${roomUserCounter[roomId]}`)

@@ -54,9 +54,9 @@ const navigate = useNavigate();
 
 
 
-  function handleItemClick(id) {
+  function handleItemClick(id, code) {
     console.log(`***Code block with id ${id} was clicked***`);
-    navigate(`/codeblock/${id}`);
+    navigate(`/codeblock/${id}`, {state: {code}});
   }
 
   return (
@@ -70,7 +70,7 @@ const navigate = useNavigate();
             <List>
               {codeBlocks.map((codeBlock, i) => (
                 <ListItem key={codeBlock.id} disablePadding>
-                  <ListItemButton onClick={() => handleItemClick(codeBlock.id)}>
+                  <ListItemButton onClick={() => handleItemClick(codeBlock.id, codeBlock.code)}>
                     <ListItemText primary={codeBlock.title} />
                   </ListItemButton>
                 </ListItem>
