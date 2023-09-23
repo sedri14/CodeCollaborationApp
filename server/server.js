@@ -60,6 +60,13 @@ io.on("connection", (socket) => {
     console.log(`User ${socket.id} DISCONNECT from room ${roomId}`);
     console.log(`Room: ${roomId}, No of users: ${roomUserCounter[roomId]}`);
   });
+
+  socket.on("code_change", (data) => {
+    const { roomId, code } = data;
+
+    //broadcase code change
+    io.to(roomId).emit("code_change", { code });
+  });
 });
 
 server.listen(3001, () => {

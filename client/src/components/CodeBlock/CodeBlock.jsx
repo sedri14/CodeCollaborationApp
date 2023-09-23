@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import io from "socket.io-client";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import "./CodeBlock.css";
 
 const socket = io.connect("http://localhost:3001");
 
@@ -21,6 +22,11 @@ const CodeBlock = () => {
     if (roomId !== "") {
       socket.emit("leave_room", roomId);
     }
+  };
+
+  const handleCodeChange = (newCode) => {
+    setCode(newCode);
+    socket.emit("code_change", { roomId, code: newCode });
   };
 
   useEffect(() => {
@@ -46,6 +52,11 @@ const CodeBlock = () => {
       }
     });
 
+    // Listen for code changes from other users
+    socket.on("code_change", (data) => {
+      setCode(data.code);
+    });
+
     return () => leaveRoom(); // Leave the room when the component unmounts
   }, [roomId]); // Rejoin the room when the room ID changes
 
@@ -56,7 +67,11 @@ const CodeBlock = () => {
         <h2>User Count: {userCount}</h2>
       </header>
       <main>
-        <textarea value={code} disabled={isMentor.current} />
+        <textarea
+          value={code}
+          disabled={isMentor.current}
+          onChange={(e) => handleCodeChange(e.target.value)}
+        />
       </main>
     </>
   );
