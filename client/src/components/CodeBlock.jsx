@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import io from "socket.io-client";
 import { useParams } from "react-router-dom";
 import { useLocation } from "react-router-dom";
@@ -10,6 +10,7 @@ const CodeBlock = () => {
   const location = useLocation();
   const code = location.state.code;
   const [userCount, setUserCount] = useState(0);
+  const isMentor = useRef(false);
 
   const joinRoom = (roomId) => {
     if (roomId !== "") {
@@ -23,17 +24,15 @@ const CodeBlock = () => {
     }
   };
 
-  //todo: delete
-  useEffect(() => {
-    console.log(`%%%%%%%%%%${userCount}`);
-  }, [userCount]);
-
   useEffect(() => {
     joinRoom(roomId); // Join the room when the component mounts
 
     // Listen for user count updates from the server
     socket.on("user_count", (count) => {
       setUserCount(count);
+      if (!isMentor.current && count === 1) {
+        isMentor.current = true;
+      }
     });
 
     return () => leaveRoom(); // Leave the room when the component unmounts
@@ -46,10 +45,7 @@ const CodeBlock = () => {
         <h2>User Count: {userCount}</h2>
       </header>
       <main>
-        <textarea
-          value={code}
-          disabled={false} //contidion: number of users in room == 1
-        />
+        <textarea value={code} disabled={isMentor.current} />
       </main>
     </>
   );
