@@ -1,14 +1,13 @@
 import { useEffect, useState, useRef } from "react";
 import io from "socket.io-client";
 import { useParams } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import axios from "axios";
 
 const socket = io.connect("http://localhost:3001");
 
 const CodeBlock = () => {
   const { id: roomId } = useParams();
-  const location = useLocation();
-  const code = location.state.code;
+  const [code, setCode] = useState("");
   const [userCount, setUserCount] = useState(0);
   const isMentor = useRef(false);
 
@@ -25,7 +24,19 @@ const CodeBlock = () => {
   };
 
   useEffect(() => {
+    const fetchCode = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:3001/codeblocks/${roomId}`
+        );
+        setCode(response.data.code);
+      } catch (error) {
+        console.error("Error fetching code:", error);
+      }
+    };
+
     joinRoom(roomId); // Join the room when the component mounts
+    fetchCode(); // Fetch the code when the component mounts
 
     // Listen for user count updates from the server
     socket.on("user_count", (count) => {
