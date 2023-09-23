@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const express = require("express");
 const app = express();
 const http = require("http");
@@ -5,6 +7,7 @@ const { Server } = require("socket.io");
 const cors = require("cors");
 
 app.use(cors());
+app.use(express.json());
 
 const server = http.createServer(app);
 
@@ -15,7 +18,16 @@ const io = new Server(server, {
   },
 });
 
+const mongoose = require("mongoose");
+mongoose.connect(process.env.DB_URL, { useNewUrlParser: true });
+const db = mongoose.connection;
+db.on("error", (error) => console.error(error));
+db.once("open", () => console.log("Connected to Database"));
+
 const roomUserCounter = {};
+
+const codeblocksRouter = require("./routes/codeblocks");
+app.use("/codeblocks", codeblocksRouter);
 
 io.on("connection", (socket) => {
   //console.log(`User connected: ${socket.id}`)
