@@ -9,7 +9,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<HomePage />}></Route>
-          <Route path="/codeblock/:codeblockId" element={<CodeBlock />}></Route>
+          <Route path="/codeblock/:id" element={<CodeBlock />}></Route>
         </Routes>
       </Router>
     </div>

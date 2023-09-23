@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import io from "socket.io-client";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -7,7 +8,9 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 
 const HomePage = () => {
-  const navigate = useNavigate();
+
+const socket = io.connect("http://localhost:3001")
+const navigate = useNavigate();
 
   const [codeBlocks, setCodeBlocks] = useState([
     {
@@ -48,6 +51,8 @@ const HomePage = () => {
           `,
     },
   ]);
+
+
 
   function handleItemClick(id) {
     console.log(`***Code block with id ${id} was clicked***`);
