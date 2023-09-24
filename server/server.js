@@ -6,9 +6,6 @@ const http = require("http");
 const { Server } = require("socket.io");
 const cors = require("cors");
 
-app.use(cors());
-app.use(express.json());
-
 const server = http.createServer(app);
 
 const origin = process.env.ORIGIN;
@@ -20,6 +17,8 @@ const io = new Server(server, {
     methods: ["GET", "POST"],
   },
 });
+app.use(cors());
+app.use(express.json());
 
 //Setting up database
 const mongoose = require("mongoose");
