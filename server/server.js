@@ -11,9 +11,12 @@ app.use(express.json());
 
 const server = http.createServer(app);
 
+const origin = process.env.ORIGIN;
+const port = process.env.PORT;
+
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: origin,
     methods: ["GET", "POST"],
   },
 });
@@ -67,6 +70,6 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(3001, () => {
-  console.log("Server started on port 3001");
+server.listen(port, () => {
+  console.log(`Server started on port ${port}`);
 });
