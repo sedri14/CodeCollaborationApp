@@ -18,6 +18,7 @@ const io = new Server(server, {
   },
 });
 
+//Setting up database
 const mongoose = require("mongoose");
 mongoose.connect(process.env.DB_URL, { useNewUrlParser: true });
 const db = mongoose.connection;
@@ -26,12 +27,11 @@ db.once("open", () => console.log("Connected to Database"));
 
 const roomUserCounter = {};
 
+//Route for handling HTTP requests
 const codeblocksRouter = require("./routes/codeblocks");
 app.use("/codeblocks", codeblocksRouter);
 
 io.on("connection", (socket) => {
-  //console.log(`User connected: ${socket.id}`)
-
   socket.on("join_room", (roomId) => {
     socket.join(roomId);
     if (!roomUserCounter[roomId]) {
@@ -40,7 +40,6 @@ io.on("connection", (socket) => {
 
     roomUserCounter[roomId]++;
 
-    // update client with user count
     io.to(roomId).emit("user_count", roomUserCounter[roomId]);
 
     console.log(`User ${socket.id} connected to room ${roomId}`);
@@ -54,7 +53,6 @@ io.on("connection", (socket) => {
       roomUserCounter[roomId]--;
     }
 
-    // update client with user count
     io.to(roomId).emit("user_count", roomUserCounter[roomId]);
 
     console.log(`User ${socket.id} DISCONNECT from room ${roomId}`);
@@ -64,7 +62,7 @@ io.on("connection", (socket) => {
   socket.on("code_change", (data) => {
     const { roomId, code } = data;
 
-    //broadcase code change
+    //Broadcast code change
     io.to(roomId).emit("code_change", { code });
   });
 });

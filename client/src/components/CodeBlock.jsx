@@ -4,7 +4,6 @@ import { SERVER_ADDRESS } from "../constants";
 import io from "socket.io-client";
 import axios from "axios";
 
-
 const socket = io.connect(SERVER_ADDRESS);
 
 const CodeBlock = () => {
@@ -30,7 +29,7 @@ const CodeBlock = () => {
     setCode(newCode);
     socket.emit("code_change", { roomId, code: newCode });
 
-    // Update code on db
+    //Update code in db
     axios
       .patch(SERVER_ADDRESS + `codeblocks/${roomId}`, { code: newCode })
       .then((response) => {})
@@ -52,10 +51,10 @@ const CodeBlock = () => {
       }
     };
 
-    joinRoom(roomId); // Join the room when the component mounts
-    fetchCode(); // Fetch the code when the component mounts
+    joinRoom(roomId);
+    fetchCode();
 
-    // Listen for user count updates from the server
+    //Listen for user count updates from the server
     socket.on("user_count", (count) => {
       setUserCount(count);
       if (!isMentor.current && count === 1) {
@@ -63,13 +62,14 @@ const CodeBlock = () => {
       }
     });
 
-    // Listen for code changes from other users
+    //Listen for code changes from other users
     socket.on("code_change", (data) => {
       setCode(data.code);
     });
 
-    return () => leaveRoom(); // Leave the room when the component unmounts
-  }, [roomId]); // Rejoin the room when the room ID changes
+    //Leave the room when the component unmounts
+    return () => leaveRoom();
+  }, [roomId]);
 
   return (
     <>
