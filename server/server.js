@@ -6,18 +6,29 @@ const http = require("http");
 const { Server } = require("socket.io");
 const cors = require("cors");
 
-const server = http.createServer(app);
-
 const origin = process.env.ORIGIN;
 const port = process.env.PORT;
 
+app.use(
+  cors({
+    credentials: true,
+    origin,
+  })
+);
+
+const server = http.createServer(app);
+
 const io = new Server(server, {
   cors: {
-    origin: origin,
+    origin,
+    credentials: true,
+    allowEIO3: true,
     methods: ["GET", "POST"],
   },
+
+  transport: ["websocket"],
 });
-app.use(cors());
+
 app.use(express.json());
 
 //Setting up database
