@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const CodeBlock = require("../models/codeblock");
 
-//Get all
+//***Get all codeblocks***
 router.get("/", async (req, res) => {
   try {
     const codeblocks = await CodeBlock.find();
@@ -10,7 +10,7 @@ router.get("/", async (req, res) => {
   } catch (err) {}
 });
 
-//Get a code block by id
+//***Get a code block by id***
 router.get("/:id", getCodeblock, (req, res) => {
   res.json(res.codeblock);
 });
@@ -30,5 +30,17 @@ async function getCodeblock(req, res, next) {
   res.codeblock = codeblock;
   next();
 }
+
+//***Update a code block***
+router.patch("/:id", getCodeblock, async (req, res) => {
+  res.codeblock.code = req.body.code
+  try {
+    const updatedCodeblock = await res.codeblock.save();
+    res.json(updatedCodeblock)
+  } catch (err) {
+    res.status(400).json({message: err})
+  }
+})
+
 
 module.exports = router;

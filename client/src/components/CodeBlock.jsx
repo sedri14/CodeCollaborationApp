@@ -1,13 +1,15 @@
 import { useEffect, useState, useRef } from "react";
-import io from "socket.io-client";
 import { useParams } from "react-router-dom";
+import { SERVER_ADDRESS } from "../constants";
+import io from "socket.io-client";
 import axios from "axios";
-import "./CodeBlock.css";
 
-const socket = io.connect("http://localhost:3001");
+
+const socket = io.connect(SERVER_ADDRESS);
 
 const CodeBlock = () => {
   const { id: roomId } = useParams();
+  const [title, setTitle] = useState("");
   const [code, setCode] = useState("");
   const [userCount, setUserCount] = useState(0);
   const isMentor = useRef(false);
@@ -27,15 +29,24 @@ const CodeBlock = () => {
   const handleCodeChange = (newCode) => {
     setCode(newCode);
     socket.emit("code_change", { roomId, code: newCode });
+
+    // Update code on db
+    axios
+      .patch(SERVER_ADDRESS + `codeblocks/${roomId}`, { code: newCode })
+      .then((response) => {})
+      .catch((error) => {
+        console.error("Error updating code:", error);
+      });
   };
 
   useEffect(() => {
     const fetchCode = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3001/codeblocks/${roomId}`
+          SERVER_ADDRESS + `codeblocks/${roomId}`
         );
         setCode(response.data.code);
+        setTitle(response.data.title);
       } catch (error) {
         console.error("Error fetching code:", error);
       }
@@ -63,8 +74,8 @@ const CodeBlock = () => {
   return (
     <>
       <header>
-        <h1>CodeBlock component Room: {roomId}</h1>
-        <h2>User Count: {userCount}</h2>
+        <h1>{title}</h1>
+        <h5>User Count: {userCount}</h5>
       </header>
       <main>
         <textarea
