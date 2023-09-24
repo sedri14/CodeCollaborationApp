@@ -5,6 +5,8 @@ The code collaboration application is designed to facilitate collaborative codin
 It consists of a React-based frontend for code editing and a Node.js and Express backend with a MongoDB database for storing code blocks.
 Real-time collaboration is enabled using WebSockets via the Socket.io library.
 
+When the initial user connects to a code block, they assume the role of the mentor, enabling them to view the code block without edit permissions. Subsequent users who join the code block session can actively participate by editing the code block. All participants connected to the same code block can observe live code editing in progress, and the code block text is stored in the database.
+
 ### Prerequisites
 Before running the application, you should have the following installed:
 
