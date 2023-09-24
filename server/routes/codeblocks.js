@@ -7,7 +7,9 @@ router.get("/", async (req, res) => {
   try {
     const codeblocks = await CodeBlock.find();
     res.json(codeblocks);
-  } catch (err) {}
+  } catch (err) {
+    return res.status(404).json({ message: "Cannot find code blocks" });
+  }
 });
 
 //Get a code block by id
@@ -33,14 +35,13 @@ async function getCodeblock(req, res, next) {
 
 //Update a code block
 router.patch("/:id", getCodeblock, async (req, res) => {
-  res.codeblock.code = req.body.code
+  res.codeblock.code = req.body.code;
   try {
     const updatedCodeblock = await res.codeblock.save();
-    res.json(updatedCodeblock)
+    res.json(updatedCodeblock);
   } catch (err) {
-    res.status(400).json({message: err})
+    res.status(400).json({ message: err.message });
   }
-})
-
+});
 
 module.exports = router;

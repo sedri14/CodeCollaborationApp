@@ -1,5 +1,6 @@
 import HomePage from "./components/HomePage";
 import CodeBlock from "./components/CodeBlock";
+import NotFound from "./components/NotFound";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 function App() {
